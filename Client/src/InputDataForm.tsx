@@ -1,25 +1,36 @@
 import {Alert, Button, Center, Container, Paper, Select, Space, TextInput} from "@mantine/core";
 import {FormEvent, useEffect, useState} from "react";
+import {InputData} from "./inputData";
 import data from "./inputData";
-//import {useNavigate, useParams} from "react-router-dom";
-import {useForm} from "@mantine/hooks";
+import {useNavigate, useParams} from "react-router-dom";
+import {EditIcon, MagnificationIcon, DeleteIcon} from "./Icons";
+import {Component2} from "./Component2";
+import { useForm , formList} from "@mantine/form";
 
 
 
 export const DataForm = () => {
-    //const {id} = useParams<{ id?: string }>();
     
-
     const form = useForm({
         initialValues: {
-            nr_rejestracyjny: 'ABC1234',
-            stawka: '20',
-            spalanie: '7'
-        }
-    });
+          actions: formList([
+              { action: '',
+                duration: '',
+                prev: '',
+                next: ''}]),
+        },
+      });
+
+
 
     const [isError, setError] = useState(false);
-    //const navigate = useNavigate();
+    const [actionList,  setActionList] = useState<InputData[]>([]);
+
+    const navigate = useNavigate();
+
+
+    // const actionList : InputData[] = [];
+    
 
     /*useEffect(() => {
         if (id)
@@ -37,72 +48,73 @@ export const DataForm = () => {
 
 
 
-    const handleFormSubmit = (event: FormEvent) => {
-        event.preventDefault();
+    const fields = form.values.actions.map((_ : any , index : number) => (
+        
+        <tr  key={index}>
+        <th>
+        <TextInput
+                 placeholder={"Podaj Nazwe"}
+                 name={"action"}
+                 label={"Action"}
+                 required
+                 {...form.getListInputProps('actions', index, 'action')}
+             />
+        </th>
+        <th>
+        <TextInput
+                 placeholder={"Podaj czas trwania"}
+                 name={"duration"}
+                 label={"Duration"}
+                 required
+                 {...form.getListInputProps('actions', index, 'duration')}
+             />
+        </th>
+        <th>
+        <TextInput
+                 placeholder={"Podaj poprzednie zadanie"}
+                 name={"prev"}
+                 label={"Prev"}
+                 required
+                 {...form.getListInputProps('actions', index, 'prev')}
+             />
+        </th>
+        <th>
+        <TextInput
+                 placeholder={"Podaj następne zdarzenie"}
+                 name={"next"}
+                 label={"Next"}
+                 required
+                 {...form.getListInputProps('actions', index, 'next')}
+             />
+        </th>
+         </tr>
+      
+      ));
 
-        form.onSubmit((values) => {
-            console.log(values)
-/*
-                data.calculate({
-                    action: values.action,
-                    duration: parseInt(values.duration),
-                    prev: parseInt(values.prev),
-                    next: parseInt(values.next)
-                }).then(() => {
-                    navigate('/')
-                }).catch(() => {
-                    setError(true)
-                })
-*/
-        })(event);
-    }
 
     return (
         <Container size="xl">
+            
             <Space h="md"/>
             <Center>
-                <Paper style={{width: 400}} shadow="xs" radius="lg">
-                    <form onSubmit={handleFormSubmit}>
-
-                        <TextInput
-                            placeholder="Podaj nazwe czynności"
-                            name="action"
-                            label="Action"
-                            required
-                            {...form.getInputProps('action')}
-                        />
-
-                        <TextInput
-                            placeholder="Podaj czas trwania w dniach"
-                            name="duration"
-                            label="Duration"
-                            required
-                            {...form.getInputProps('duration')}
-                        />
-
-                        <TextInput
-                            placeholder="Podaj poprzednie zdarzenie"
-                            name="prev"
-                            label="Prev"
-                            required
-                            {...form.getInputProps('prev')}
-                        />
-
-                        <TextInput
-                            placeholder="Podaj następne zdarzenie"
-                            name="next"
-                            label="Next"
-                            required
-                            {...form.getInputProps('next')}
-                        />
-
-                        
-                        <Space h="md"/>
-
+                <Paper style={{width: 1000,}} shadow="xs" radius="lg">
+                    <form onSubmit={form.onSubmit((values) => alert(JSON.stringify(values, null, 2)))}> 
+                        <table>
+                            <tbody>{fields}</tbody>
+                        </table>
+                        <Button onClick={() => form.addListItem('actions', { 
+                            action: '',
+                            duration: '',
+                            prev: '',
+                            next: '' })}>
+                             ADD
+                    </Button>
                         <Button type="submit" fullWidth  style={{background: "#960920"}} >
-                            Wyślij
+                                    Wykonaj
                         </Button>
                     </form>
+
+
                     {isError &&
                         <>
                             <Space h="md"/>
@@ -111,10 +123,12 @@ export const DataForm = () => {
                             </Alert>
                         </>
                     }
+                
                 </Paper>
+                
 
             </Center>
-
+                
 
         </Container>
     )

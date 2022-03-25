@@ -6,7 +6,6 @@ import {DataForm} from "./InputDataForm"
 function App() {
     return (
         <div>
-            <Navigation/>
             <Routes>
                 <Route path="/" element={<DataForm/>}/>
             </Routes>

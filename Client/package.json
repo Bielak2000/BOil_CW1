@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@mantine/core": "^3.0.5",
+    "@mantine/form": "^4.0.8",
     "@mantine/hooks": "^3.0.5",
     "@types/node": "^17.0.7",
     "@types/react-router-dom": "^5.3.1",
@@ -51,6 +52,7 @@
     "@types/react": "^17.0.42",
     "@types/react-calendar": "^3.4.4",
     "@types/react-dom": "^17.0.14",
+    "prettier": "2.6.1",
     "sass": "^1.43.3"
   }
 }
