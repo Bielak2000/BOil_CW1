@@ -7,6 +7,17 @@ export type InputData = {
     next: number
 }
 
+export type InputDataS = {
+    action: string,
+    duration: string,
+    prev: string,
+    next: string
+}
+
+export type Form = {
+    actions: InputDataS[]
+}
+
 const data = {
     calculate: (input: InputData[]) => client.post('/', input)
 }

@@ -1,11 +1,12 @@
 import {Alert, Button, Center, Container, Paper, Select, Space, TextInput} from "@mantine/core";
 import {FormEvent, useEffect, useState} from "react";
-import {InputData} from "./inputData";
+import {InputData, Form} from "./inputData";
 import data from "./inputData";
 import {useNavigate, useParams} from "react-router-dom";
 import {EditIcon, MagnificationIcon, DeleteIcon} from "./Icons";
 import {Component2} from "./Component2";
 import { useForm , formList} from "@mantine/form";
+import client from './Services/api'
 
 
 
@@ -46,6 +47,20 @@ export const DataForm = () => {
                 })
     }, [id])*/
 
+
+    const send = async ( values: Form) => {
+        const backendData : InputData[] = values.actions.map((v) => {
+            return {
+                ...v,
+                duration: Number(v.duration),
+                prev: Number(v.prev),
+                next: Number(v.next)
+            }
+        })
+        //console.log(backendData);
+        const output = await client.post('/', backendData);
+        //console.log(output);
+    }
 
 
     const fields = form.values.actions.map((_ : any , index : number) => (
@@ -92,13 +107,15 @@ export const DataForm = () => {
       ));
 
 
+
+
     return (
         <Container size="xl">
             
             <Space h="md"/>
             <Center>
                 <Paper style={{width: 1000,}} shadow="xs" radius="lg">
-                    <form onSubmit={form.onSubmit((values) => alert(JSON.stringify(values, null, 2)))}> 
+                    <form onSubmit={form.onSubmit(async (values) => await send(values))}> 
                         <table>
                             <tbody>{fields}</tbody>
                         </table>
