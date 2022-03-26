@@ -1,9 +1,10 @@
 import express from 'express';
 import {InputData, Action, Event, OutputData} from "./interfaces";
+import cors from 'cors';
 
 var bodyParser = require('body-parser')
 const app = express();
-const port = 3000;
+const port = 4000;
 
 // create application/json parser
 var jsonParser = bodyParser.json()
@@ -11,12 +12,18 @@ var jsonParser = bodyParser.json()
 // create application/x-www-form-urlencoded parser
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
+
 app.post('/', jsonParser, (req, res) => {
   const data = req.body as InputData[];
+  //console.log(data);
   const eventList : Event[] = [];
   
   var max = 0;
-  console.log(data);
+  //console.log(data);
   for(let i = 0; i < data.length; i++){
       if(data[i].next>max)
         max=data[i].next;
@@ -54,6 +61,8 @@ app.post('/', jsonParser, (req, res) => {
     eventsArr[i].earliest = temp1;
   })
 
+
+  let index=0;
   //czas najpozniejszy
   for(let i = events.length-1; i >= 0; i--) {
     if(i === (events.length-1) || i===0) {
@@ -66,13 +75,20 @@ app.post('/', jsonParser, (req, res) => {
         nextEventId: 0,
         prevEventId: 0
       };
+      index=0;
       actionsList.forEach((al) => {
         
         if(al.prevEventId === (i+1)){
-          console.log(al.duration + "<" + temp.duration);
-          if(al.duration < temp.duration){
-            temp = al;
+          if(index===0){
+            temp=al;
           }
+          else{
+            console.log((events[al.nextEventId-1].latest-al.duration) +"<"+ (events[al.nextEventId-1].latest-temp.duration))
+            if((events[al.nextEventId-1].latest-al.duration) < (events[al.nextEventId-1].latest-temp.duration)){
+              temp = al;
+            }
+          }
+          index++;
         }
       })
       
@@ -96,6 +112,7 @@ app.post('/', jsonParser, (req, res) => {
       critical.push(events[i]);
     }
   }
+  
 
   //wyslanie danych
   const output : OutputData = {
@@ -104,6 +121,7 @@ app.post('/', jsonParser, (req, res) => {
     criticalPath: critical,
     maxTime: events[events.length-1].latest
   }
+  //console.log(output);
   res.send(output);
 });
 
