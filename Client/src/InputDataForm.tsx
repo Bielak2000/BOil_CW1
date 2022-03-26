@@ -1,14 +1,15 @@
 import {Alert, Button, Center, Container, Paper, Select, Space, TextInput} from "@mantine/core";
 import {FormEvent, useEffect, useState} from "react";
-import {InputData, Form} from "./inputData";
+import {InputData, Form, OutputData} from "./inputData";
 import data from "./inputData";
 import {useNavigate, useParams} from "react-router-dom";
 import {EditIcon, MagnificationIcon, DeleteIcon} from "./Icons";
 import {Component2} from "./Component2";
 import { useForm , formList} from "@mantine/form";
 import client from './Services/api'
-
-
+import cytoscape from 'cytoscape'
+import {draw} from './graph'
+import './cy.css';
 
 export const DataForm = () => {
     
@@ -23,7 +24,8 @@ export const DataForm = () => {
       });
 
 
-
+    
+    const [klikneto, setKliknieto] = useState(false);
     const [isError, setError] = useState(false);
     const [actionList,  setActionList] = useState<InputData[]>([]);
 
@@ -47,7 +49,6 @@ export const DataForm = () => {
                 })
     }, [id])*/
 
-
     const send = async ( values: Form) => {
         const backendData : InputData[] = values.actions.map((v) => {
             return {
@@ -60,7 +61,16 @@ export const DataForm = () => {
         //console.log(backendData);
         const output = await client.post('/', backendData);
         //console.log(output);
+        //console.log("63");
+        setKliknieto(true);
+        
+        //console.log("65");
+        draw(output.data);
+        //console.log("67");
+        //return output.data;
     }
+
+    
 
 
     const fields = form.values.actions.map((_ : any , index : number) => (
@@ -110,6 +120,7 @@ export const DataForm = () => {
 
 
     return (
+        
         <Container size="xl">
             
             <Space h="md"/>
@@ -145,7 +156,14 @@ export const DataForm = () => {
                 
 
             </Center>
+            
+            {klikneto &&
+                <>
                 
+                    <script src='./graph.js'></script>
+                    <div id='cy'></div>
+                </>
+            }
 
         </Container>
     )
