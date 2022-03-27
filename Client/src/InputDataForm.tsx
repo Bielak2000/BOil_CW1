@@ -1,170 +1,180 @@
-import {Alert, Button, Center, Container, Paper, Select, Space, TextInput} from "@mantine/core";
-import {FormEvent, useEffect, useState} from "react";
-import {InputData, Form, OutputData} from "./inputData";
+import {
+  Alert,
+  Button,
+  Center,
+  Container,
+  Paper,
+  Select,
+  Space,
+  TextInput,
+} from "@mantine/core";
+import { FormEvent, useEffect, useState } from "react";
+import { InputData, Form, OutputData } from "./inputData";
 import data from "./inputData";
-import {useNavigate, useParams} from "react-router-dom";
-import {EditIcon, MagnificationIcon, DeleteIcon} from "./Icons";
-import {Component2} from "./Component2";
-import { useForm , formList} from "@mantine/form";
-import client from './Services/api'
-import cytoscape from 'cytoscape'
-import {draw} from './graph'
-import './cy.css';
+import { useNavigate, useParams } from "react-router-dom";
+import { EditIcon, MagnificationIcon, DeleteIcon } from "./Icons";
+import { Component2 } from "./Component2";
+import { useForm, formList } from "@mantine/form";
+import client from "./Services/api";
+import cytoscape from "cytoscape";
+import { draw } from "./graph";
+import "./cy.css";
 
 export const DataForm = () => {
-    
-    const form = useForm({
-        initialValues: {
-          actions: formList([
-              { action: '',
-                duration: '',
-                prev: '',
-                next: ''}]),
-        },
-      });
+  const form = useForm({
+    initialValues: {
+      actions: formList([{ action: "", duration: "", prev: "", next: "" }]),
+    },
+  });
 
+  const [klikneto, setKliknieto] = useState(false);
+  const [isError, setError] = useState(false);
+  const [actionList, setActionList] = useState<InputData[]>([]);
+  const [fieldsCount, setFieldsCount] = useState(0);
 
-    
-    const [klikneto, setKliknieto] = useState(false);
-    const [isError, setError] = useState(false);
-    const [actionList,  setActionList] = useState<InputData[]>([]);
+  const navigate = useNavigate();
 
-    const navigate = useNavigate();
+  const send = async (values: Form) => {
+    const backendData: InputData[] = values.actions.map((v) => {
+      return {
+        ...v,
+        duration: Number(v.duration),
+        prev: Number(v.prev),
+        next: Number(v.next),
+      };
+    });
+    const output = await client.post("/", backendData);
+    setKliknieto(true);
 
+    draw(output.data);
+  };
 
-    // const actionList : InputData[] = [];
-    
-
-    /*useEffect(() => {
-        if (id)
-            pojazdApi
-                .getById(parseInt(id!))
-                .then((response) => {
-                    const webPojazd = response.data;
-                    form.setValues({
-                        nr_rejestracyjny: webPojazd.nr_rejestracyjny.toString(),
-                        stawka: webPojazd.stawka.toString(),
-                        spalanie: webPojazd.spalanie.toString()
-                    });
-                })
-    }, [id])*/
-
-    const send = async ( values: Form) => {
-        const backendData : InputData[] = values.actions.map((v) => {
-            return {
-                ...v,
-                duration: Number(v.duration),
-                prev: Number(v.prev),
-                next: Number(v.next)
-            }
-        })
-        //console.log(backendData);
-        const output = await client.post('/', backendData);
-        //console.log(output);
-        //console.log("63");
-        setKliknieto(true);
-        
-        //console.log("65");
-        draw(output.data);
-        //console.log("67");
-        //return output.data;
-    }
-
-    
-
-
-    const fields = form.values.actions.map((_ : any , index : number) => (
-        
-        <tr  key={index}>
-        <th>
+  const fields = form.values.actions.map((_: any, index: number) => (
+    <tr key={index}>
+      <th>
         <TextInput
-                 placeholder={"Podaj Nazwe"}
-                 name={"action"}
-                 label={"Action"}
-                 required
-                 {...form.getListInputProps('actions', index, 'action')}
-             />
-        </th>
-        <th>
+          placeholder={"Podaj Nazwe"}
+          name={"action"}
+          label={""}
+          required
+          {...form.getListInputProps("actions", index, "action")}
+        />
+      </th>
+      <th>
         <TextInput
-                 placeholder={"Podaj czas trwania"}
-                 name={"duration"}
-                 label={"Duration"}
-                 required
-                 {...form.getListInputProps('actions', index, 'duration')}
-             />
-        </th>
-        <th>
+          placeholder={"Podaj czas trwania"}
+          name={"duration"}
+          label={""}
+          required
+          {...form.getListInputProps("actions", index, "duration")}
+        />
+      </th>
+      <th>
         <TextInput
-                 placeholder={"Podaj poprzednie zadanie"}
-                 name={"prev"}
-                 label={"Prev"}
-                 required
-                 {...form.getListInputProps('actions', index, 'prev')}
-             />
-        </th>
-        <th>
+          placeholder={"Podaj poprzednie zadanie"}
+          name={"prev"}
+          label={""}
+          required
+          {...form.getListInputProps("actions", index, "prev")}
+        />
+      </th>
+      <th>
         <TextInput
-                 placeholder={"Podaj następne zdarzenie"}
-                 name={"next"}
-                 label={"Next"}
-                 required
-                 {...form.getListInputProps('actions', index, 'next')}
-             />
-        </th>
-         </tr>
-      
-      ));
+          placeholder={"Podaj następne zdarzenie"}
+          name={"next"}
+          label={""}
+          required
+          {...form.getListInputProps("actions", index, "next")}
+        />
+      </th>
+    </tr>
+  ));
 
+  return (
+    <Container size="xl">
+      <Space h="md" />
+      <h1>CPM Solution</h1>
+      <Center>
+        <Paper style={{ width: 1000 }} shadow="xs" radius="lg">
+          <form onSubmit={form.onSubmit(async (values) => await send(values))}>
+            <table style={{ width: 1000 }}>
+              <tr>
+                <th>
+                  <Button
+                    onClick={() => {
+                      form.addListItem("actions", {
+                        action: "",
+                        duration: "",
+                        prev: "",
+                        next: "",
+                      });
+                      setFieldsCount(fieldsCount + 1);
+                    }}
+                    fullWidth
+                    style={{ background: "green" }}
+                  >
+                    ADD
+                  </Button>
+                </th>
+                <th>
+                  <Button
+                    fullWidth
+                    style={{ background: "#960920" }}
+                    onClick={() => {
+                      form.removeListItem(
+                        "actions",
+                        fieldsCount
+                        //form.getListInputProps.length + 1
+                        //form.getListInputProps.length
+                      );
+                      setFieldsCount(fieldsCount - 1);
+                    }}
+                  >
+                    Delete
+                  </Button>
+                </th>
+                <th>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    style={{ background: "blue" }}
+                  >
+                    Solve
+                  </Button>
+                </th>
+              </tr>
+            </table>
+          </form>
+          <table>
+            <tr>
+              <th style={{ width: 250 }}>Action</th>
+              <th style={{ width: 250 }}>Duration</th>
+              <th style={{ width: 250 }}>Prev</th>
+              <th style={{ width: 250 }}>Next</th>
+            </tr>
 
+            <tbody>{fields}</tbody>
+          </table>
 
+          {isError && (
+            <>
+              <Space h="md" />
+              <Alert color="red" title="Błąd">
+                Podano nieprawidłowe dane
+              </Alert>
+            </>
+          )}
 
-    return (
-        
-        <Container size="xl">
-            
-            <Space h="md"/>
-            <Center>
-                <Paper style={{width: 1000,}} shadow="xs" radius="lg">
-                    <form onSubmit={form.onSubmit(async (values) => await send(values))}> 
-                        <table>
-                            <tbody>{fields}</tbody>
-                        </table>
-                        <Button onClick={() => form.addListItem('actions', { 
-                            action: '',
-                            duration: '',
-                            prev: '',
-                            next: '' })}>
-                             ADD
-                    </Button>
-                        <Button type="submit" fullWidth  style={{background: "#960920"}} >
-                                    Wykonaj
-                        </Button>
-                    </form>
+          <div id="space1"></div>
 
-
-                    {isError &&
-                        <>
-                            <Space h="md"/>
-                            <Alert color="red" title="Błąd">
-                                Podano nieprawidłowe dane
-                            </Alert>
-                        </>
-                    }
-                
-                </Paper>
-                
-
-            </Center>
-            
-            {klikneto &&
-                <>
-                
-                    <script src='./graph.js'></script>
-                    <div id='cy'></div>
-                </>
-            }
-
-        </Container>
-    )
-}
+          {klikneto && (
+            <>
+              <script src="./graph.js"></script>
+              <div id="cy"></div>
+            </>
+          )}
+        </Paper>
+      </Center>
+    </Container>
+  );
+};
