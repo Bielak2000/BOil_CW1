@@ -22,6 +22,7 @@ export type Action = {
 export type OutputData = {
     events: Event[],
     actions: Action[],
-    criticalPath: Event[],
+    criticalPathEvents: Event[],
+    criticalPathActions: Action[],
     maxTime: number
 }

@@ -171,7 +171,13 @@ export const DataForm = () => {
           {klikneto && (
             <>
               <script src="./graph.js"></script>
-              <div id="maxTime">{`Czas krytyczny: ${maxTime}`}</div>
+              <div id="grid">
+                <div id="legend">
+                  <img src="https://media.discordapp.net/attachments/770714777076105238/960972135503896637/Wheel_legend.png" width="500" height="85"/>
+                </div>
+                <div id="maxTime">{`Czas krytyczny: ${maxTime}`}</div>
+                <div id="empty"></div>
+              </div>
               <div id="cy"></div>
             </>
           )}

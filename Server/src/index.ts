@@ -85,7 +85,7 @@ app.post("/", jsonParser, (req, res) => {
             // console.log((events[al.nextEventId-1].latest-al.duration) +"<"+ (events[al.nextEventId-1].latest-temp.duration))
             if (
               events[al.nextEventId - 1].latest - al.duration <
-              events[al.nextEventId - 1].latest - temp.duration
+              events[temp.nextEventId - 1].latest - temp.duration
             ) {
               temp = al;
             }
@@ -102,27 +102,30 @@ app.post("/", jsonParser, (req, res) => {
   events.forEach((e) => (e.stock = e.latest - e.earliest));
 
   //sciezka krtyczyna
-  let temp1: Event = {
-    earliest: 0,
-    eventId: 0,
-    latest: 0,
-    stock: 0,
-  };
-  const critical: Event[] = [];
+  const criticalActions: Action[] = [];
+  const criticalEvents: Event[] = [];
   for (var i = 0; i < max; i++) {
     if (events[i].stock === 0) {
-      critical.push(events[i]);
+      criticalEvents.push(events[i]);
+      actionsList.forEach((a) => {
+        if((a.prevEventId===events[i].eventId) && (events[a.nextEventId-1].stock===0)){
+          criticalActions.push(a);
+        }
+      })
     }
   }
+  
+  
 
   //wyslanie danych
   const output: OutputData = {
     events,
     actions: actionsList,
-    criticalPath: critical,
+    criticalPathEvents: criticalEvents,
+    criticalPathActions: criticalActions,
     maxTime: events[events.length - 1].latest,
   };
-  //console.log(output);
+  console.log(output);
   res.send(output);
 });
 

@@ -23,10 +23,10 @@ export const draw = (OutputData: OutputData) => {
           "text-halign": "center",
           "text-valign": "center",
           "padding-top": "2px",
-          "border-color": "#000",
-          "border-width": 1,
+          "border-color": "data(color2)",
+          "border-width": "data(border)",
           "background-image":
-            "https://images-ext-1.discordapp.net/external/KzzceWQBbfp8ZEMed4f-cRVRoVeVBv8A88sfjmUBfaM/%3F_nc_cat%3D111%26ccb%3D1-5%26_nc_sid%3Daee45a%26_nc_ohc%3Dw-z1dCG4gxgAX8GsH5R%26_nc_ad%3Dz-m%26_nc_cid%3D0%26_nc_ht%3Dscontent.xx%26oh%3D03_AVIleRm7-GaA5PnQa5Mf4uDV50w1e7luQRiQrohlnO9yOg%26oe%3D6266C793/https/scontent.xx.fbcdn.net/v/t1.15752-9/277217633_791994438776131_5445933574696745703_n.png",
+            "https://media.discordapp.net/attachments/770714777076105238/960972142026031124/Wheel.png?width=675&height=657",
           "background-fit": "cover",
         },
       },
@@ -34,9 +34,12 @@ export const draw = (OutputData: OutputData) => {
       {
         selector: "edge",
         style: {
+          // "overlay-color": "black",
+					// "overlay-padding": 10,
+					// "overlay-opacity": 0.25 
           width: 1,
-          "line-color": "rgb(27, 91, 143)",
-          "target-arrow-color": "rgb(27, 91, 143)",
+          "line-color": "data(color)",
+          "target-arrow-color": "data(color)",
           "target-arrow-shape": "triangle",
           "target-arrow-fill": "filled",
           label: "data(id)",
@@ -53,23 +56,43 @@ export const draw = (OutputData: OutputData) => {
       e.earliest >= 10 || e.latest >= 10
         ? `${e.eventId}\n${e.earliest}  ${e.latest}\n${e.stock}`
         : `${e.eventId}\n${e.earliest}     ${e.latest}\n${e.stock}`;
+    let color2 = "#000";
+    let border = 1;
+    if(OutputData.criticalPathEvents.find((cpa) => cpa.eventId === e.eventId)){
+      color2 = "red";
+    }
+
+    if(e.eventId===1 || e.eventId===OutputData.events.length)
+    {
+      border = 4;
+    }
     cy.add({
       group: "nodes",
       data: {
         id: `${e.eventId}`,
         label: data,
+        color2,
+        border
       },
     });
   });
   OutputData.actions.forEach((a) => {
+    let color = "rgb(27, 91, 143)";
+    if(OutputData.criticalPathActions.find((cpa) => cpa.name === a.name)){
+      color = "red";
+    }
+    
     cy.add({
       group: "edges",
       data: {
         id: a.name + a.duration,
         source: a.prevEventId,
         target: a.nextEventId,
+        color
       },
     });
+    
+    
   });
 
   cy.center();

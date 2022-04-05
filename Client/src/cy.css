@@ -17,10 +17,31 @@ h1 {
   background-color: rgba(0, 0, 0, 0.5);
 }
 
+#grid {
+  grid-template-columns: auto auto auto;
+  background-color: rgb(224, 214, 203);
+  width: 1000px;
+}
+
 #maxTime {
   text-align: right;
-  background-color: rgb(224, 214, 203);
   font-weight: 800;
-  padding: 5px;
+  padding: 20px;
   border: 1cm;
+  float: left;
+  width: 160px;
+  text-align: right;
+  margin-top: 22px;
+}
+
+#legend {
+  float: left;
+  width: 760px;
+  padding: 20px;
+  font-size: 30px;
+  text-align: left;
+}
+
+#empty{
+  clear: both;
 }
