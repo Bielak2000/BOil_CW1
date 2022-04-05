@@ -3,6 +3,8 @@
   height: 500px;
   display: block;
   background-color: rgb(224, 214, 203);
+  border: 2px;
+  border-color: black;
 }
 
 h1 {
@@ -13,4 +15,12 @@ h1 {
 #space1 {
   height: 50px;
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+#maxTime {
+  text-align: right;
+  background-color: rgb(224, 214, 203);
+  font-weight: 800;
+  padding: 5px;
+  border: 1cm;
 }

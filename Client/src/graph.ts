@@ -35,25 +35,29 @@ export const draw = (OutputData: OutputData) => {
         selector: "edge",
         style: {
           width: 1,
-          "line-color": "#369",
-          "target-arrow-color": "#369",
+          "line-color": "rgb(27, 91, 143)",
+          "target-arrow-color": "rgb(27, 91, 143)",
           "target-arrow-shape": "triangle",
+          "target-arrow-fill": "filled",
           label: "data(id)",
           "font-size": "14px",
           color: "black",
+          "curve-style": "bezier",
         },
       },
     ],
   });
 
   OutputData.events.forEach((e, index, arr) => {
-    const data = `${e.eventId}${e.earliest}${e.latest}${e.stock}`;
-
+    const data =
+      e.earliest >= 10 || e.latest >= 10
+        ? `${e.eventId}\n${e.earliest}  ${e.latest}\n${e.stock}`
+        : `${e.eventId}\n${e.earliest}     ${e.latest}\n${e.stock}`;
     cy.add({
       group: "nodes",
       data: {
         id: `${e.eventId}`,
-        label: `${e.eventId}\n${e.earliest}    ${e.latest}\n${e.stock}`,
+        label: data,
       },
     });
   });
@@ -121,6 +125,7 @@ export const draw = (OutputData: OutputData) => {
     gravityRange: 3.8,
     // Initial cooling factor for incremental layout
     initialEnergyOnIncremental: 0.5,
+    directed: true,
   };
 
   cy.layout(defaultOptions).run();

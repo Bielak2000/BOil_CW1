@@ -31,6 +31,7 @@ export const DataForm = () => {
   const [isError, setError] = useState(false);
   const [actionList, setActionList] = useState<InputData[]>([]);
   const [fieldsCount, setFieldsCount] = useState(0);
+  const [maxTime, setMaxTime] = useState(undefined);
 
   const navigate = useNavigate();
 
@@ -44,8 +45,8 @@ export const DataForm = () => {
       };
     });
     const output = await client.post("/", backendData);
+    setMaxTime(output.data.maxTime);
     setKliknieto(true);
-
     draw(output.data);
   };
 
@@ -170,6 +171,7 @@ export const DataForm = () => {
           {klikneto && (
             <>
               <script src="./graph.js"></script>
+              <div id="maxTime">{`Czas krytyczny: ${maxTime}`}</div>
               <div id="cy"></div>
             </>
           )}
