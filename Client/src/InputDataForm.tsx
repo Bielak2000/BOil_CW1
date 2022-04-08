@@ -18,6 +18,7 @@ import client from "./Services/api";
 import cytoscape from "cytoscape";
 import { draw } from "./graph";
 import "./cy.css";
+import { drawGantt } from "./ganttFile";
 
 export const DataForm = () => {
   const form = useForm({
@@ -47,6 +48,7 @@ export const DataForm = () => {
     setMaxTime(output.data.maxTime);
     setKliknieto(true);
     draw(output.data);
+    drawGantt(output.data);
   };
 
   const fields = form.values.actions.map((_: any, index: number) => (
