@@ -13,7 +13,6 @@ import { InputData, Form, OutputData } from "./inputData";
 import data from "./inputData";
 import { useNavigate, useParams } from "react-router-dom";
 import { EditIcon, MagnificationIcon, DeleteIcon } from "./Icons";
-import { Component2 } from "./Component2";
 import { useForm, formList } from "@mantine/form";
 import client from "./Services/api";
 import cytoscape from "cytoscape";
@@ -179,8 +178,16 @@ export const DataForm = () => {
                 <div id="empty"></div>
               </div>
               <div id="cy"></div>
+              <div id="space1"></div>
+              <div id="Gantt">
+                <script src="dhtmlxgantt.js" ></script>
+                <link rel="stylesheet" href="dhtmlxgantt.css" type="text/css"/>
+                <div id="gantt_here"></div>
+              </div>
+              <div id="space1"></div>
             </>
           )}
+
         </Paper>
       </Center>
     </Container>

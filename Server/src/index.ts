@@ -1,6 +1,8 @@
 import express from "express";
 import { InputData, Action, Event, OutputData } from "./interfaces";
 import cors from "cors";
+import { setDefaultResultOrder } from "dns";
+import { deepStrictEqual } from "assert";
 
 var bodyParser = require("body-parser");
 const app = express();
@@ -21,11 +23,9 @@ app.use(
 
 app.post("/", jsonParser, (req, res) => {
   const data = req.body as InputData[];
-  //console.log(data);
   const eventList: Event[] = [];
 
   var max = 0;
-  //console.log(data);
   for (let i = 0; i < data.length; i++) {
     if (data[i].next > max) max = data[i].next;
   }
@@ -63,9 +63,9 @@ app.post("/", jsonParser, (req, res) => {
     });
     eventsArr[i].earliest = temp1;
   });
-
-  let index = 0;
+  
   //czas najpozniejszy
+  let index = 0;
   for (let i = events.length - 1; i >= 0; i--) {
     if (i === events.length - 1 || i === 0) {
       events[i].latest = events[i].earliest;
@@ -82,7 +82,6 @@ app.post("/", jsonParser, (req, res) => {
           if (index === 0) {
             temp = al;
           } else {
-            // console.log((events[al.nextEventId-1].latest-al.duration) +"<"+ (events[al.nextEventId-1].latest-temp.duration))
             if (
               events[al.nextEventId - 1].latest - al.duration <
               events[temp.nextEventId - 1].latest - temp.duration
@@ -107,15 +106,14 @@ app.post("/", jsonParser, (req, res) => {
   for (var i = 0; i < max; i++) {
     if (events[i].stock === 0) {
       criticalEvents.push(events[i]);
-      actionsList.forEach((a) => {
-        if((a.prevEventId===events[i].eventId) && (events[a.nextEventId-1].stock===0)){
-          criticalActions.push(a);
+      for(var j=0; j<actionsList.length; j++){
+        if((actionsList[j].prevEventId===events[i].eventId) && (events[actionsList[j].nextEventId-1].stock===0)){
+          criticalActions.push(actionsList[j]);
+          break;
         }
-      })
+      }
     }
   }
-  
-  
 
   //wyslanie danych
   const output: OutputData = {
@@ -125,7 +123,6 @@ app.post("/", jsonParser, (req, res) => {
     criticalPathActions: criticalActions,
     maxTime: events[events.length - 1].latest,
   };
-  console.log(output);
   res.send(output);
 });
 
