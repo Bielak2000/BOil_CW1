@@ -18,7 +18,11 @@ import client from "./Services/api";
 import cytoscape from "cytoscape";
 import { draw } from "./graph";
 import "./cy.css";
-import { drawGantt } from "./ganttFile";
+import { dataGantt, DrawChart } from "./ganttFile";
+import {Chart} from "react-google-charts";
+import { GanttData } from "./ganttFile";
+
+
 
 export const DataForm = () => {
   const form = useForm({
@@ -31,7 +35,8 @@ export const DataForm = () => {
   const [isError, setError] = useState(false);
   const [actionList, setActionList] = useState<InputData[]>([]);
   const [fieldsCount, setFieldsCount] = useState(0);
-  const [maxTime, setMaxTime] = useState(undefined);
+  const [maxTime, setMaxTime] = useState([]);
+  const [outputDataGantt, setOutputDataGantt] = useState<GanttData[]>([]);
 
   const navigate = useNavigate();
 
@@ -48,7 +53,9 @@ export const DataForm = () => {
     setMaxTime(output.data.maxTime);
     setKliknieto(true);
     draw(output.data);
-    drawGantt(output.data);
+    setOutputDataGantt(dataGantt(output.data))
+    //dataGantt(output.data)
+    //drawChart();
   };
 
   const fields = form.values.actions.map((_: any, index: number) => (
@@ -181,11 +188,8 @@ export const DataForm = () => {
               </div>
               <div id="cy"></div>
               <div id="space1"></div>
-              
-                <script src="dhtmlxgantt.js" ></script>
-                <link rel="stylesheet" href="dhtmlxgantt.css" type="text/css"/>
-                <div id="gantt_here"></div>
-              
+              <DrawChart output={outputDataGantt}/>
+              <div id="chart_div"></div>
               <div id="space1"></div>
             </>
           )}
