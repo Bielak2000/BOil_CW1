@@ -181,11 +181,11 @@ export const DataForm = () => {
               </div>
               <div id="cy"></div>
               <div id="space1"></div>
-              <div id="Gantt">
+              
                 <script src="dhtmlxgantt.js" ></script>
                 <link rel="stylesheet" href="dhtmlxgantt.css" type="text/css"/>
                 <div id="gantt_here"></div>
-              </div>
+              
               <div id="space1"></div>
             </>
           )}

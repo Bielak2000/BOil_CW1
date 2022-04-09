@@ -1,5 +1,5 @@
 import { OutputData } from "./inputData";
-import Gantt from "gantt";
+import {gantt, Gantt} from "dhtmlx-gantt";
 
 interface GanttData {
   id: number;
@@ -12,8 +12,8 @@ interface GanttData {
 }
 
 export const drawGantt = (OutputData: OutputData) => {
-  Gantt.config.date_grid = "%Y-%m-%d";
-  Gantt.init("gantt_here");
+  gantt.config.date_grid = "%Y-%m-%d";
+  gantt.init("gantt_here");
 
   // const data : GanttData[] = OutputData.events.map((e)=>{
     
@@ -23,7 +23,7 @@ export const drawGantt = (OutputData: OutputData) => {
   //   data.push({e.})
   // });
 
-  Gantt.parse({
+  gantt.parse({
   data: [
     {id: 1, text: "Project #1", start_date: null, duration: null, parent:0, progress: 0, open: true},
     {id: 2, text: "Task #1", start_date: "2019-08-01", duration:5, parent:1, progress: 1},
