@@ -4,22 +4,16 @@ import {
   Center,
   Container,
   Paper,
-  Select,
   Space,
   TextInput,
 } from "@mantine/core";
-import { FormEvent, useEffect, useState } from "react";
-import { InputData, Form, OutputData } from "./inputData";
-import data from "./inputData";
-import { useNavigate, useParams } from "react-router-dom";
-import { EditIcon, MagnificationIcon, DeleteIcon } from "./Icons";
+import { useState } from "react";
+import { InputData, Form} from "./inputData";
 import { useForm, formList } from "@mantine/form";
 import client from "./Services/api";
-import cytoscape from "cytoscape";
 import { draw } from "./graph";
 import "./cy.css";
 import { dataGantt, DrawChart } from "./ganttFile";
-import {Chart} from "react-google-charts";
 import { GanttData } from "./ganttFile";
 
 
@@ -33,12 +27,9 @@ export const DataForm = () => {
 
   const [klikneto, setKliknieto] = useState(false);
   const [isError, setError] = useState(false);
-  const [actionList, setActionList] = useState<InputData[]>([]);
   const [fieldsCount, setFieldsCount] = useState(0);
   const [maxTime, setMaxTime] = useState([]);
   const [outputDataGantt, setOutputDataGantt] = useState<GanttData[]>([]);
-
-  const navigate = useNavigate();
 
   const send = async (values: Form) => {
     const backendData: InputData[] = values.actions.map((v) => {
@@ -54,8 +45,6 @@ export const DataForm = () => {
     setKliknieto(true);
     draw(output.data);
     setOutputDataGantt(dataGantt(output.data))
-    //dataGantt(output.data)
-    //drawChart();
   };
 
   const fields = form.values.actions.map((_: any, index: number) => (
@@ -133,8 +122,6 @@ export const DataForm = () => {
                       form.removeListItem(
                         "actions",
                         fieldsCount
-                        //form.getListInputProps.length + 1
-                        //form.getListInputProps.length
                       );
                       setFieldsCount(fieldsCount - 1);
                     }}
