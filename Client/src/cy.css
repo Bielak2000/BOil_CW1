@@ -14,7 +14,7 @@ h1 {
 
 #space1 {
   height: 50px;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(222, 215, 215, 0.519);
 }
 
 #grid {
@@ -42,13 +42,12 @@ h1 {
   text-align: left;
 }
 
-#empty{
+#empty {
   clear: both;
 }
 
-#Gantt{
+#Gantt {
   width: 1000px;
   height: 500px;
   background-color: rgba(224, 214, 203, 0.363);
 }
-

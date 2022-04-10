@@ -1,8 +1,6 @@
 import express from "express";
 import { InputData, Action, Event, OutputData } from "./interfaces";
 import cors from "cors";
-import { setDefaultResultOrder } from "dns";
-import { deepStrictEqual } from "assert";
 
 var bodyParser = require("body-parser");
 const app = express();
@@ -10,9 +8,6 @@ const port = 4000;
 
 // create application/json parser
 var jsonParser = bodyParser.json();
-
-// create application/x-www-form-urlencoded parser
-var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 app.use(
   cors({
@@ -23,7 +18,6 @@ app.use(
 
 app.post("/", jsonParser, (req, res) => {
   const data = req.body as InputData[];
-  const eventList: Event[] = [];
 
   var max = 0;
   for (let i = 0; i < data.length; i++) {
@@ -50,7 +44,7 @@ app.post("/", jsonParser, (req, res) => {
     })
   );
 
-  //czas najwczesniejszy
+  //wyznaczenie najwczesniejszego czasu zaistnienia zdarzenia
   events.forEach((e, i, eventsArr) => {
     if (i === 0) return;
     var temp1: number = 0;
@@ -63,8 +57,8 @@ app.post("/", jsonParser, (req, res) => {
     });
     eventsArr[i].earliest = temp1;
   });
-  
-  //czas najpozniejszy
+
+  //wyznaczenie najpozniejszego czasu zaistnienia zdarzenia
   let index = 0;
   for (let i = events.length - 1; i >= 0; i--) {
     if (i === events.length - 1 || i === 0) {
@@ -92,7 +86,6 @@ app.post("/", jsonParser, (req, res) => {
           index++;
         }
       });
-
       events[i].latest = events[temp.nextEventId - 1].latest - temp.duration;
     }
   }
@@ -106,10 +99,17 @@ app.post("/", jsonParser, (req, res) => {
   for (var i = 0; i < max; i++) {
     if (events[i].stock === 0) {
       criticalEvents.push(events[i]);
-      for(var j=0; j<actionsList.length; j++){
-        if((actionsList[j].prevEventId===events[i].eventId) && (events[actionsList[j].nextEventId-1].stock===0)){
-          criticalActions.push(actionsList[j]);
-          break;
+      for (var j = 0; j < actionsList.length; j++) {
+        if (
+          actionsList[j].prevEventId === events[i].eventId &&
+          events[actionsList[j].nextEventId - 1].stock === 0
+        ) {
+          if (
+            events[actionsList[j].nextEventId - 1].earliest -
+              actionsList[j].duration ===
+            events[actionsList[j].prevEventId - 1].earliest
+          )
+            criticalActions.push(actionsList[j]);
         }
       }
     }

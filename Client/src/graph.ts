@@ -35,8 +35,8 @@ export const draw = (OutputData: OutputData) => {
         selector: "edge",
         style: {
           // "overlay-color": "black",
-					// "overlay-padding": 10,
-					// "overlay-opacity": 0.25 
+          // "overlay-padding": 10,
+          // "overlay-opacity": 0.25
           width: 1,
           "line-color": "data(color)",
           "target-arrow-color": "data(color)",
@@ -58,12 +58,13 @@ export const draw = (OutputData: OutputData) => {
         : `${e.eventId}\n${e.earliest}     ${e.latest}\n${e.stock}`;
     let color2 = "#000";
     let border = 1;
-    if(OutputData.criticalPathEvents.find((cpa) => cpa.eventId === e.eventId)){
+    if (
+      OutputData.criticalPathEvents.find((cpa) => cpa.eventId === e.eventId)
+    ) {
       color2 = "red";
     }
 
-    if(e.eventId===1 || e.eventId===OutputData.events.length)
-    {
+    if (e.eventId === 1 || e.eventId === OutputData.events.length) {
       border = 4;
     }
     cy.add({
@@ -72,27 +73,25 @@ export const draw = (OutputData: OutputData) => {
         id: `${e.eventId}`,
         label: data,
         color2,
-        border
+        border,
       },
     });
   });
   OutputData.actions.forEach((a) => {
     let color = "rgb(27, 91, 143)";
-    if(OutputData.criticalPathActions.find((cpa) => cpa.name === a.name)){
+    if (OutputData.criticalPathActions.find((cpa) => cpa.name === a.name)) {
       color = "red";
     }
-    
+
     cy.add({
       group: "edges",
       data: {
         id: a.name + a.duration,
         source: a.prevEventId,
         target: a.nextEventId,
-        color
+        color,
       },
     });
-    
-    
   });
 
   cy.center();

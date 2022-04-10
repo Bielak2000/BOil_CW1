@@ -8,15 +8,13 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useState } from "react";
-import { InputData, Form} from "./inputData";
+import { InputData, Form } from "./inputData";
 import { useForm, formList } from "@mantine/form";
 import client from "./Services/api";
 import { draw } from "./graph";
 import "./cy.css";
 import { dataGantt, DrawChart } from "./ganttFile";
 import { GanttData } from "./ganttFile";
-
-
 
 export const DataForm = () => {
   const form = useForm({
@@ -30,6 +28,7 @@ export const DataForm = () => {
   const [fieldsCount, setFieldsCount] = useState(0);
   const [maxTime, setMaxTime] = useState([]);
   const [outputDataGantt, setOutputDataGantt] = useState<GanttData[]>([]);
+  // const [height, setHeight] = useState("");
 
   const send = async (values: Form) => {
     const backendData: InputData[] = values.actions.map((v) => {
@@ -44,7 +43,7 @@ export const DataForm = () => {
     setMaxTime(output.data.maxTime);
     setKliknieto(true);
     draw(output.data);
-    setOutputDataGantt(dataGantt(output.data))
+    setOutputDataGantt(dataGantt(output.data));
   };
 
   const fields = form.values.actions.map((_: any, index: number) => (
@@ -119,10 +118,7 @@ export const DataForm = () => {
                     fullWidth
                     style={{ background: "#960920" }}
                     onClick={() => {
-                      form.removeListItem(
-                        "actions",
-                        fieldsCount
-                      );
+                      form.removeListItem("actions", fieldsCount);
                       setFieldsCount(fieldsCount - 1);
                     }}
                   >
@@ -168,19 +164,21 @@ export const DataForm = () => {
               <script src="./graph.js"></script>
               <div id="grid">
                 <div id="legend">
-                  <img src="https://media.discordapp.net/attachments/770714777076105238/960972135503896637/Wheel_legend.png" width="500" height="85"/>
+                  <img
+                    src="https://media.discordapp.net/attachments/770714777076105238/960972135503896637/Wheel_legend.png"
+                    width="500"
+                    height="85"
+                  />
                 </div>
                 <div id="maxTime">{`Czas krytyczny: ${maxTime}`}</div>
                 <div id="empty"></div>
               </div>
               <div id="cy"></div>
               <div id="space1"></div>
-              <DrawChart output={outputDataGantt}/>
-              <div id="chart_div"></div>
+              <DrawChart output={outputDataGantt} />
               <div id="space1"></div>
             </>
           )}
-
         </Paper>
       </Center>
     </Container>
